@@ -4,19 +4,19 @@ BodyMechanics Project - NewMexico
 
 
 TODO:
-_____print Greg's book
+Done_____print Greg's book
 _____follow Greg's book examples
-_____expand dropbox
-_____send money to mom
-_____deposit money into bankaccount
+Done_____expand dropbox
+Done_____send money to mom
+Done_____deposit money into bankaccount
 _____call allameda bank about charges
 _____pick-up mail
-_____website??
+Done_____website??
 _____documentation
 
 
 _____ControlP5 ipad
-_____setup Kinect at the lab
+Done_____setup Kinect at the lab
 _____setup massage table
 _____Double Kinects??
 _____auto-start processing?
