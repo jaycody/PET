@@ -1,0 +1,55 @@
+Last login: Sat Dec 31 04:41:07 on ttys001
+Sat Dec 31 04:43:33 ~/.ssh/ $ ssh-keygen -t rsa -C "jaybird@recursionvideolab.comm"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/Jai/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Passphrases do not match.  Try again.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/Jai/.ssh/id_rsa.
+Your public key has been saved in /Users/Jai/.ssh/id_rsa.pub.
+The key fingerprint is:
+72:64:4a:14:c6:49:f5:00:0c:77:49:0d:b5:61:b4:3c jaybird@recursionvideolab.comm
+The key's randomart image is:
++--[ RSA 2048]----+
+|    .=B***=      |
+|     ++..=.+     |
+|      . o E      |
+|     . +   .     |
+|      o S        |
+|       o         |
+|                 |
+|                 |
+|                 |
++-----------------+
+Sat Dec 31 05:04:59 ~/.ssh/ $ ls
+id_rsa		id_rsa.pub	known_hosts
+Sat Dec 31 05:06:50 ~/.ssh/ $ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
