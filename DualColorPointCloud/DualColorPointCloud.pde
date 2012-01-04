@@ -14,6 +14,7 @@
  _____import the openGL library??
  _____create a camera class?
  _____manual controls of positioning will allow for easiest alignment
+ _____first establish solid Kinect Location, then calibrate and lock into place.
  
  _____auto startup
  _____auto send to other screens
@@ -57,12 +58,12 @@ void setup()
   cam2.enableIR();
 
   // access the color camera
-  cam1.enableRGB();
-  cam2.enableRGB();
+  //cam1.enableRGB();
+  //cam2.enableRGB();
   // tell OpenNI to line-up the color pixels
   // with the depth data
-  cam1.alternativeViewPointDepthToImage();
-  cam2.alternativeViewPointDepthToImage();
+ // cam1.alternativeViewPointDepthToImage();
+  //cam2.alternativeViewPointDepthToImage();
 
   cam = new PeasyCam(this, 0, 0, 0, 1000);
   //background(10,200,20);
@@ -70,38 +71,39 @@ void setup()
 
 void draw()
 {
+  stroke(255);
   background(0);
   // update the cam
   SimpleOpenNI.updateAll();
 //cam1
   pushMatrix() ;
-  PImage cam1rgbImage = cam1.rgbImage();
-  translate(width/2, height/2, -250);
+  //PImage cam1rgbImage = cam1.rgbImage();
+  translate(0, 0, -250);
   rotateX(radians(180));
-  translate(0, 0, 1000);
+  //translate(0, 0, 1000);
   //rotateY(radians(rotation));
-  rotateY(radians(mouseY));
+  //rotateY(radians(mouseY));
   //rotation++;
   PVector[] cam1DepthPoints = cam1.depthMapRealWorld();
   for (int i = 0; i < cam1DepthPoints.length; i+=3) {
     PVector currentPoint = cam1DepthPoints[i];
-    stroke(cam1rgbImage.pixels[i]);
+    //stroke(cam1rgbImage.pixels[i]);
     point(currentPoint.x, currentPoint.y, currentPoint.z);
   }
   popMatrix();
 //cam2
   pushMatrix();
-  PImage cam2rgbImage = cam2.rgbImage();
+  //PImage cam2rgbImage = cam2.rgbImage();
   translate(width/2, height/2, -250);
   rotateX(radians(180));
-  translate(0, 0, 1000);
+  //translate(0, 0, 1000);
   //rotateY(radians(rotation));
-  rotateY(radians(mouseY));
+  //rotateY(radians(mouseY));
   //rotation++;
   PVector[] cam2DepthPoints = cam2.depthMapRealWorld();
   for (int i = 0; i < cam2DepthPoints.length; i+=3) {
     PVector currentPoint = cam2DepthPoints[i];
-    stroke(cam2rgbImage.pixels[i]);
+   // stroke(cam2rgbImage.pixels[i]);
     point(currentPoint.x, currentPoint.y, currentPoint.z);
   }
   popMatrix();
