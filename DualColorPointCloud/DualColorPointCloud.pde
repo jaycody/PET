@@ -32,9 +32,17 @@ PeasyCam cam;
 SimpleOpenNI  cam1;
 SimpleOpenNI  cam2;
 
+//lets get some navigation going
+float        zoomF =0.3f;
+float        rotX = radians(180);  // by default rotate the hole scene 180deg around the x-axis, 
+// the data from openni comes upside down
+float        rotY = radians(0);
+
 void setup()
 {
-  size(640 * 2 + 10, 480 * 2 + 10, OPENGL); 
+
+  size(1024, 768, OPENGL);
+  //size(640 * 2 + 10, 480 * 2 + 10, OPENGL); 
 
   // start OpenNI, loads the library
   SimpleOpenNI.start();
@@ -48,6 +56,10 @@ void setup()
   // init the cameras
   cam1 = new SimpleOpenNI(0, this);
   cam2 = new SimpleOpenNI(1, this);
+
+  // disable mirror
+  //cam1.setMirror(false);
+
 
   // set the camera generators
   cam1.enableDepth();
@@ -65,8 +77,14 @@ void setup()
  // cam1.alternativeViewPointDepthToImage();
   //cam2.alternativeViewPointDepthToImage();
 
-  cam = new PeasyCam(this, 0, 0, 0, 1000);
+  //cam = new PeasyCam(this, 0, 0, 0, 1000);
   //background(10,200,20);
+
+//  stroke(255, 255, 255);
+//  smooth();
+//  perspective(radians(45), 
+//  float(width)/float(height), 
+//  10, 150000);
 }
 
 void draw()
@@ -75,14 +93,15 @@ void draw()
   background(0);
   // update the cam
   SimpleOpenNI.updateAll();
-//cam1
-  pushMatrix() ;
+  
+  //cam1
+ // pushMatrix() ;
   //PImage cam1rgbImage = cam1.rgbImage();
-  translate(0, 0, -250);
+  translate(width/2, height/2, -100);
   rotateX(radians(180));
-  //translate(0, 0, 1000);
+   translate(0, 0, 1000);
+  rotateY(radians(mouseY));
   //rotateY(radians(rotation));
-  //rotateY(radians(mouseY));
   //rotation++;
   PVector[] cam1DepthPoints = cam1.depthMapRealWorld();
   for (int i = 0; i < cam1DepthPoints.length; i+=3) {
@@ -90,23 +109,23 @@ void draw()
     //stroke(cam1rgbImage.pixels[i]);
     point(currentPoint.x, currentPoint.y, currentPoint.z);
   }
-  popMatrix();
-//cam2
-  pushMatrix();
+ // popMatrix();
+  //cam2
+  //pushMatrix();
   //PImage cam2rgbImage = cam2.rgbImage();
-  translate(width/2, height/2, -250);
-  rotateX(radians(180));
+  //translate(width, height/2, -250);
+  //rotateX(radians(180));
   //translate(0, 0, 1000);
   //rotateY(radians(rotation));
   //rotateY(radians(mouseY));
   //rotation++;
-  PVector[] cam2DepthPoints = cam2.depthMapRealWorld();
-  for (int i = 0; i < cam2DepthPoints.length; i+=3) {
-    PVector currentPoint = cam2DepthPoints[i];
-   // stroke(cam2rgbImage.pixels[i]);
-    point(currentPoint.x, currentPoint.y, currentPoint.z);
-  }
-  popMatrix();
+//  PVector[] cam2DepthPoints = cam2.depthMapRealWorld();
+ // for (int i = 0; i < cam2DepthPoints.length; i+=3) {
+ //   PVector currentPoint = cam2DepthPoints[i];
+    // stroke(cam2rgbImage.pixels[i]);
+//    point(currentPoint.x, currentPoint.y, currentPoint.z);
+//}
+  //popMatrix();
 
   // draw depthImageMap
   //image(cam1.depthImage(),0,0);
@@ -115,4 +134,41 @@ void draw()
   // image(cam2.depthImage(),640 + 10,0);
   //image(cam2.irImage(),640 + 10,480 + 10);
 }
+
+//void keyPressed()
+//{
+//  switch(key)
+//  {
+//  case ' ':
+//    cam1.setMirror(!cam1.mirror());
+//    break;
+//  }
+//
+//  switch(keyCode)
+//  {
+//  case LEFT:
+//    rotY += 0.1f;
+//    break;
+//  case RIGHT:
+//    // zoom out
+//    rotY -= 0.1f;
+//    break;
+//  case UP:
+//    if (keyEvent.isShiftDown())
+//      zoomF += 0.02f;
+//    else
+//      rotX += 0.1f;
+//    break;
+//  case DOWN:
+//    if (keyEvent.isShiftDown())
+//    {
+//      zoomF -= 0.02f;
+//      if (zoomF < 0.01)
+//        zoomF = 0.01;
+//    }
+//    else
+//      rotX -= 0.1f;
+//    break;
+//  }
+//}
 
