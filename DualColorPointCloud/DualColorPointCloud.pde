@@ -38,6 +38,9 @@ float        rotX = radians(180);  // by default rotate the hole scene 180deg ar
 // the data from openni comes upside down
 float        rotY = radians(0);
 
+//keeping track of which image is moving
+int currentImage =1;
+
 void setup()
 {
 
@@ -58,7 +61,7 @@ void setup()
   cam2 = new SimpleOpenNI(1, this);
 
   // disable mirror
-  //cam1.setMirror(false);
+  cam1.setMirror(false);
 
 
   // set the camera generators
@@ -74,58 +77,93 @@ void setup()
   //cam2.enableRGB();
   // tell OpenNI to line-up the color pixels
   // with the depth data
- // cam1.alternativeViewPointDepthToImage();
+  // cam1.alternativeViewPointDepthToImage();
   //cam2.alternativeViewPointDepthToImage();
 
   //cam = new PeasyCam(this, 0, 0, 0, 1000);
   //background(10,200,20);
 
-//  stroke(255, 255, 255);
-//  smooth();
-//  perspective(radians(45), 
-//  float(width)/float(height), 
-//  10, 150000);
+  stroke(255, 255, 255);
+  smooth();
+  perspective(radians(45), 
+  float(width)/float(height), 
+  10, 150000);
 }
 
 void draw()
 {
-  stroke(255);
   background(0);
+  stroke(255);
+
+
   // update the cam
   SimpleOpenNI.updateAll();
-  
+
   //cam1
- // pushMatrix() ;
+  pushMatrix() ;
   //PImage cam1rgbImage = cam1.rgbImage();
-  translate(width/2, height/2, -100);
-  rotateX(radians(180));
-   translate(0, 0, 1000);
-  rotateY(radians(mouseY));
+
+  // try the switch-case way
+  translate(width/2, height/2, 0);
+  rotateX(rotX);
+  rotateY(rotY);
+  scale(zoomF);
+  // prepare to draw centered in x-y
+  // pull it 1000 pixels closer to z
+  //  translate(0, height/2, -400);
+  //  
+  //  //flip the point cloud vertically since images come backwards
+  //  rotateX(radians(180));
+  //  
+  //  //rotate about the x-axis using mouseX
+  // // rotateX(radians(mouseY));
+  //  
+  //  //move center of rotation to inside point cloud
+  translate(0, 0, 1000);
+  //   
+  //rotate about the y-axis using mouseY
+  //rotateY(radians(mouseX));
   //rotateY(radians(rotation));
   //rotation++;
+
+
   PVector[] cam1DepthPoints = cam1.depthMapRealWorld();
   for (int i = 0; i < cam1DepthPoints.length; i+=3) {
     PVector currentPoint = cam1DepthPoints[i];
     //stroke(cam1rgbImage.pixels[i]);
     point(currentPoint.x, currentPoint.y, currentPoint.z);
   }
- // popMatrix();
+  popMatrix();
+
   //cam2
-  //pushMatrix();
+  pushMatrix();
   //PImage cam2rgbImage = cam2.rgbImage();
-  //translate(width, height/2, -250);
-  //rotateX(radians(180));
-  //translate(0, 0, 1000);
+
+  // prepare to draw centered in x-y
+  // pull it 1000 pixels closer to z
+  translate(width, height/2, -400);
+
+  //flip the point cloud vertically since images come backwards
+  rotateX(radians(180));
+
+  //rotate about the x-axis using mouseX
+  // rotateX(radians(mouseY));
+
+  //move center of rotation to inside point cloud
+  translate(0, 0, 1000);
+
+  //rotate about the y-axis using mouseY
+  rotateY(radians(mouseX + 50));
   //rotateY(radians(rotation));
-  //rotateY(radians(mouseY));
   //rotation++;
-//  PVector[] cam2DepthPoints = cam2.depthMapRealWorld();
- // for (int i = 0; i < cam2DepthPoints.length; i+=3) {
- //   PVector currentPoint = cam2DepthPoints[i];
+
+  PVector[] cam2DepthPoints = cam2.depthMapRealWorld();
+  for (int i = 0; i < cam2DepthPoints.length; i+=3) {
+    PVector currentPoint = cam2DepthPoints[i];
     // stroke(cam2rgbImage.pixels[i]);
-//    point(currentPoint.x, currentPoint.y, currentPoint.z);
-//}
-  //popMatrix();
+    point(currentPoint.x, currentPoint.y, currentPoint.z);
+  }
+  popMatrix();
 
   // draw depthImageMap
   //image(cam1.depthImage(),0,0);
@@ -135,40 +173,56 @@ void draw()
   //image(cam2.irImage(),640 + 10,480 + 10);
 }
 
-//void keyPressed()
-//{
-//  switch(key)
-//  {
-//  case ' ':
-//    cam1.setMirror(!cam1.mirror());
-//    break;
-//  }
-//
-//  switch(keyCode)
-//  {
-//  case LEFT:
-//    rotY += 0.1f;
-//    break;
-//  case RIGHT:
-//    // zoom out
-//    rotY -= 0.1f;
-//    break;
-//  case UP:
-//    if (keyEvent.isShiftDown())
-//      zoomF += 0.02f;
-//    else
-//      rotX += 0.1f;
-//    break;
-//  case DOWN:
-//    if (keyEvent.isShiftDown())
-//    {
-//      zoomF -= 0.02f;
-//      if (zoomF < 0.01)
-//        zoomF = 0.01;
-//    }
-//    else
-//      rotX -= 0.1f;
-//    break;
-//  }
+//create a switch statement
+//switch(currentImage) {  //determine which image is moving
+  
 //}
+
+
+void keyPressed()
+{
+  switch(key)
+  {
+  case ' ':
+    cam1.setMirror(!cam1.mirror());
+    break;
+  }
+
+  switch(keyCode)
+  {
+  case LEFT:
+    rotY += 0.1f;
+    break;
+  case RIGHT:
+    // zoom out
+    rotY -= 0.1f;
+    break;
+  case UP:
+    if (keyEvent.isShiftDown())
+      zoomF += 0.02f;
+    else
+      rotX += 0.1f;
+    break;
+  case DOWN:
+    if (keyEvent.isShiftDown())
+    {
+      zoomF -= 0.02f;
+      if (zoomF < 0.01)
+        zoomF = 0.01;
+    }
+    else
+      rotX -= 0.1f;
+    break;
+  }
+}
+
+void mousePressed () {  //create a counter to give us accees to one image at time
+  //increase current image
+  currentImage ++;
+  //if it goes about 2
+  if (currentImage > 2) {
+    currentImage = 1;
+  }
+  println(currentImage);
+}
 
