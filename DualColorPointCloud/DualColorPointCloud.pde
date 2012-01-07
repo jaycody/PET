@@ -19,6 +19,8 @@
  _____auto startup
  _____auto send to other screens
  _____auto update via push from github
+ 
+ _____Testing. adding new shapeshots
  _____
  
  NOTES:
