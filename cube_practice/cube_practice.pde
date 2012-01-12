@@ -39,8 +39,11 @@ void draw() {
   rotateY(map(mouseX, 0, width, 0, 8*PI));//
 
   //make everything bigger (ie zoom in)
-  translate(0, 0, s*-1000);
+  translate(0, 0, s*-1000); //this repositions the point cloud relative to the increasing scale
   scale (s);
+  //since scale is a percentage where 1.5 is an increase of 50%, we use small increments.
+  //however, small increments won't be registered if the same variable is used to translate.
+  //s must be scaled up by multiplying by a scalar quantity
 
   println(s);
 
@@ -88,7 +91,7 @@ void draw() {
 
 //.now use the keys to control zooom
 //up arraow zooms IN, down arrow zooms OUT, "s" gets passed to global variable "scale"
-void keypressed() {
+void keyPressed() {
   if (keyCode == 38) {
     s =s+.01;
   }
