@@ -90,11 +90,11 @@ void draw() {
 //up arraow zooms IN, down arrow zooms OUT, "s" gets passed to global variable "scale"
 void keypressed() {
   if (keyCode == 38) {
-    s +=.01;
+    s =s+.01;
   }
 
   if (keyCode == 40) {
-    s-=.01;
+    s=s-.01;
   }
 }
 
