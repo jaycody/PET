@@ -78,7 +78,7 @@ pCam.endHUD(); // always
 
   PVector [] depthPoints1 = kinect1.depthMapRealWorld(); //returns an array loads array
 
-  for (int i = 0; i<depthPoints1.length; i+=50) {
+  for (int i = 0; i<depthPoints1.length; i+=5) {
     PVector currentPoint = depthPoints1 [i]; //extract PVector from this location and store it locally
     point (currentPoint.x, currentPoint.y, currentPoint.z);
   }
