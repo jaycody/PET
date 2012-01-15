@@ -85,3 +85,12 @@ pCam.endHUD(); // always
   
 }
 
+//Shiffman's advice for starting full screen undecorated windows in second monitor
+void init() { 
+  frame.removeNotify();
+  frame.setUndecorated(true);
+  frame.addNotify();
+  super.init();
+}
+//then in draw add:  frame.setLocation(0,0); // to place an undecorated screen at origin
+//or in the case of second monitor (1024, 768) if my primary screen is (1024,768)
