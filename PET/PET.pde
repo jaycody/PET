@@ -62,6 +62,8 @@ SimpleOpenNI kinect1;
 PeasyCam pCam;
 OscP5 oscP5;
 
+PeasyDragHandler ZoomDragHandler;
+
 //iPad recepticles
 //controls peasy.rotateY
 float lookLR = 0; //  Look Left/Right = /1/lookLR :  range 0-1 incoming 
@@ -108,9 +110,8 @@ void setup () {
  
 
   pCam = new PeasyCam(this, 0, 0, 0,500); //initialize peasy
-  
-   // maybe this will give us zoom abilities is we set the wheel to NULL
-  pCam.setWheelHandler(null);
+  ZoomDragHandler = pCam.getZoomDragHandler();//getting control of zoom action
+  pCam.setWheelScale(.5);
 
   kinect1 = new SimpleOpenNI (this);  //initialize 1 kinect
   kinect1.setMirror(true);//disable mirror and renable with set mirror button
@@ -215,6 +216,7 @@ void draw() {
   peasyVectors(); //function to get PVector info for position and look at.
 
 
+
   calcLookLR(rcvLookLR);
   calcLookUD(rcvLookUD);
   calcTiltLR(rcvTiltLR);
@@ -256,8 +258,11 @@ void calcTiltLR (float v) {
 //_____DEFINE FUNCTION FOR ZOOM
 void calcZoomIO (float v) {
   zoomIO = v;
-  double amountZoomIO = map (zoomIO, -1,1, 0,3000);
-  pCam.setDistance(amountZoomIO); //distance from looked at point.  i think this distance no differen
+  float amountZoomIO = map (zoomIO, -1,1, -10,10);
+  ZoomDragHandler.handleDrag(amountZoomIO,pZoomIO);
+  pZoomIO = amountZoomIO;
+  
+  //pCam.setDistance(amountZoomIO); //distance from looked at point.  i think this distance no differen
   double d = pCam.getDistance();// how far away is look-at point
   print(" dist_lookAt = " +d);
   println(" amountZoomIO = " + amountZoomIO);
