@@ -27,9 +27,11 @@
  DONE____create and control one peasy variable with ipad
  
  ____define functions to receive parameters for LR UP IO look
- ____attempt to pass functions from OSCevent.  just for testing purposes. likely call functions in draw
+ DONE____attempt to pass functions from OSCevent.  just for testing purposes. likely call functions in draw
  
  ____add PEASY cam control to variables (perhaps issue with moving the coordinate system?
+ ____Follow User1 center of gravity
+ ____Look at User 1 center of gravity
  
  ____add remainder of variables for standard movements
  ____then switch to ABQ computer and begin pCam hotspots
@@ -46,6 +48,7 @@
  ____hotspot above therpists head
  ____where toggling between Kinects, return to previous camera angle
  ____//PeasyDragHandler will retain dampening effect seen by mouseXY
+ 
  
  
  */
@@ -75,6 +78,15 @@ float rcvTiltLR = 0;
 
 float zoomIO = 0; //
 float pZoomIO = 0;
+float rcvZoomIO = 0;
+
+float moveLR = 0;
+float pMoveLR = 0;
+float rcvMoveLR = 0;
+
+float moveUD = 0;
+float pMoveUD = 0;
+float rcvMoveUD = 0;
 
 float reset = 0;
 float pCamReset = 0;
@@ -93,8 +105,12 @@ void setup () {
 
   //start oscP5 listening for incoming messages at port 8000
   oscP5 = new OscP5(this, 8000);
+ 
 
-  pCam = new PeasyCam(this, 0, 0, 0, 1000); //initialize peasy
+  pCam = new PeasyCam(this, 0, 0, 0,500); //initialize peasy
+  
+   // maybe this will give us zoom abilities is we set the wheel to NULL
+  pCam.setWheelHandler(null);
 
   kinect1 = new SimpleOpenNI (this);  //initialize 1 kinect
   kinect1.setMirror(true);//disable mirror and renable with set mirror button
@@ -117,17 +133,17 @@ void oscEvent (OscMessage theOscMessage) {
     rcvTiltLR = val;// assigned received val from tilt and prepare to pass in function
   }
   else if (addr.equals("/1/zoomIO")) {
-    zoomIO = val;
+    rcvZoomIO = val;
   }
-
+  else if (addr.equals("/1/moveLR")) {
+    rcvMoveLR = val;
+  }
   else if (addr.equals("/1/reset")) {
     reset = val;
   }
-
   else if (addr.equals("/1/setMirror")) {
     setMirror = true;
   }
-
   else if (addr.equals("/1/showCamera")) {
     swCam = val;
   }
@@ -141,14 +157,7 @@ void draw() {
   kinect1.update();
 
   rotateX(PI); //rotate along the xPole 180 degrees
-  //rotateY(PI);
   stroke(255);
-  print("lookLR = " + lookLR);
-  //rotateX(lookUD); //rotate around the X_pole (so look up down)
-  println(" lookUD = " + lookUD);
-  //scale(zoomIO); // aint so sure about messing with the scale, bro
-  println(" scale = " + zoomIO);
-  //because scale is like a multiplier, bro
 
   //____DRAW POINT CLOUD____
   PVector [] depthPoints1 = kinect1.depthMapRealWorld(); //returns an array loads array
@@ -196,7 +205,7 @@ void draw() {
   //reset cam position but only if we need to
   if (reset != pCamReset) {
     if (reset == 1) {
-      pCam.reset(2500); //only move cam if we need to
+      pCam.reset(2000); //only move cam if we need to
     }
   }
   pCamReset = reset;
@@ -209,10 +218,15 @@ void draw() {
   calcLookLR(rcvLookLR);
   calcLookUD(rcvLookUD);
   calcTiltLR(rcvTiltLR);
+  calcZoomIO(rcvZoomIO);
+  
+  calcMoveLR(rcvMoveLR);
 
   print("rcvLookLR = " + rcvLookLR);
-  print("rcvLookUD = " + rcvLookUD);
-  print("rcvTiltLR = " + rcvTiltLR);
+  print(" rcvLookUD = " + rcvLookUD);
+  print(" rcvTiltLR = " + rcvTiltLR);
+  println(" rcvZoomIO = " + rcvZoomIO);
+  print("rcvMoveLR = " + rcvMoveLR);
 }//end draw
 
 //defining the functions for rotations around Y_Pole
@@ -223,26 +237,41 @@ void calcLookLR (float v) {
   print("amountLookLR = " + amountLookLR);
   pLookLR = lookLR;
 }
-
 //+++++DEFINE FUNCTIONS FOR ROTATIONS around Z_Pole
 void calcLookUD(float v) {  //receive from fucntion calling at end of draw
   lookUD = v;
   float amountLookUD = map(lookUD-pLookUD, -1, 1, -PI, PI);  //giving one rotation each direction
   pCam.rotateX(amountLookUD);
-  println (" amountLookUD = " + amountLookUD);
+  print (" amountLookUD = " + amountLookUD);
   pLookUD = lookUD;// resetting the acceleration so it's not additive.  start at zero difference
 }
-
+//++++++DEFINE FUNCTION FOR TILT
 void calcTiltLR (float v) {
   tiltLR = v;
   float amountTiltLR = map (tiltLR-pTiltLR, -1, 1, PI, -PI);
   pCam.rotateZ(amountTiltLR);
-  println (" amountTiltLR = " + amountTiltLR);
+  print (" amountTiltLR = " + amountTiltLR);
   pTiltLR = tiltLR;
 }
+//_____DEFINE FUNCTION FOR ZOOM
+void calcZoomIO (float v) {
+  zoomIO = v;
+  double amountZoomIO = map (zoomIO, -1,1, 0,3000);
+  pCam.setDistance(amountZoomIO); //distance from looked at point.  i think this distance no differen
+  double d = pCam.getDistance();// how far away is look-at point
+  print(" dist_lookAt = " +d);
+  println(" amountZoomIO = " + amountZoomIO);
+   
+}
+void calcMoveLR (float v) {
+ moveLR = v;
+double amountMoveLR = map (moveLR-pMoveLR, -1,1,3000,-3000);  //camera.pan(double dx, double dy);
+pCam.pan(amountMoveLR, 0);  // y =0 because we're only moving on the x-axis.
+print(" amountMoveLR = " + amountMoveLR);
+pMoveLR = moveLR;
+}
 
-
-
+  
 
 
 void peasyVectors() {
