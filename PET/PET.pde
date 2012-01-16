@@ -46,7 +46,7 @@
  ____hotspot above therpists head
  ____where toggling between Kinects, return to previous camera angle
  ____//PeasyDragHandler will retain dampening effect seen by mouseXY
-
+ 
  
  */
 import processing.opengl.*;
@@ -59,15 +59,19 @@ SimpleOpenNI kinect1;
 PeasyCam pCam;
 OscP5 oscP5;
 
-
-//iPad control variable
+//iPad recepticles
+//controls peasy.rotateY
 float lookLR = 0; //  Look Left/Right = /1/lookLR :  range 0-1 incoming 
 float pLookLR =0; // previous val, so that Peasy aint flying around
 float rcvLookLR = 0; //takes the value directly from the oscP5 event
-float nowLookLR = 0; //receives the return value from calcLookLR();//
-
+//controls peasy.rotateX
 float lookUD = 0; // Look up down.  gonna change incoming range to -6,6 (or close to -2PI,2PI)
 float pLookUD = 0;
+float rcvLookUD = 0; //need a repository from incoming osc messages
+//controls peasy.rotateZ
+float tiltLR = 0;
+float pTiltLR = 0;
+float rcvTiltLR = 0;
 
 float zoomIO = 0; //
 float pZoomIO = 0;
@@ -105,10 +109,12 @@ void oscEvent (OscMessage theOscMessage) {
 
   if (addr.equals("/1/lookLR")) {  //remove the if statement and put it in draw
     rcvLookLR = val; //assign received value.  then call function in draw to pass parameter
-   
   }
   else if (addr.equals("/1/lookUD")) {
-    lookUD = val;
+    rcvLookUD = val;// assigned receive val. prepare to pass parameter in called function: end of draw
+  }
+  else if (addr.equals("/1/tiltLR")) {
+    rcvTiltLR = val;// assigned received val from tilt and prepare to pass in function
   }
   else if (addr.equals("/1/zoomIO")) {
     zoomIO = val;
@@ -137,10 +143,6 @@ void draw() {
   rotateX(PI); //rotate along the xPole 180 degrees
   //rotateY(PI);
   stroke(255);
-
- 
-
- 
   print("lookLR = " + lookLR);
   //rotateX(lookUD); //rotate around the X_pole (so look up down)
   println(" lookUD = " + lookUD);
@@ -148,17 +150,16 @@ void draw() {
   println(" scale = " + zoomIO);
   //because scale is like a multiplier, bro
 
+  //____DRAW POINT CLOUD____
   PVector [] depthPoints1 = kinect1.depthMapRealWorld(); //returns an array loads array
-
   for (int i = 0; i<depthPoints1.length; i+=5) {
     PVector currentPoint = depthPoints1 [i]; //extract PVector from this location and store it locally
     point (currentPoint.x, currentPoint.y, currentPoint.z);
   }
 
   //___TOGGLE SWITCHES
-
   //___________________
-  //SetMirror Debounce Toggle:  if setMirror goes HIGH, then toggle mirror  
+  //SET MIRROR DEBOUNCED TOGGLR:  if setMirror goes HIGH, then toggle mirror  
   if (setMirror !=pSetMirror) {
     if (setMirror) {
       kinect1.setMirror(!kinect1.mirror());
@@ -188,10 +189,8 @@ void draw() {
     kinect1.drawCamFrustum();
   }
   //__________________
-
-
   //________________
-  //RESET CAMERA TOGGLE
+  //"RESET CAMERA" PUSH BUTTON
   //ahhhh, this debounce works.  placed after the formation of the point cloud
   //also made a difference with the flicker
   //reset cam position but only if we need to
@@ -202,32 +201,44 @@ void draw() {
   }
   pCamReset = reset;
   //________________
-  
-  //+++++++CALL FUNCTIONS++++++++
+
+  //++CALL FUNCTIONS++++++++_____________________________________
   peasyVectors(); //function to get PVector info for position and look at.
-  
- 
- calcLookLR(rcvLookLR);
- println("rcvLookLR = " + rcvLookLR);
- 
+
+
+  calcLookLR(rcvLookLR);
+  calcLookUD(rcvLookUD);
+  calcTiltLR(rcvTiltLR);
+
+  print("rcvLookLR = " + rcvLookLR);
+  print("rcvLookUD = " + rcvLookUD);
+  print("rcvTiltLR = " + rcvTiltLR);
 }//end draw
 
 //defining the functions for rotations around Y_Pole
 void calcLookLR (float v) {
   lookLR = v;
-  float amountLookLR = map(lookLR - pLookLR,-1,1, -2*PI,2*PI);
+  float amountLookLR = map(lookLR - pLookLR, -1, 1, -PI, PI);
   pCam.rotateY (amountLookLR);
-  println("amountLookLR = " + amountLookLR);
+  print("amountLookLR = " + amountLookLR);
   pLookLR = lookLR;
-  //return;
 }
 
 //+++++DEFINE FUNCTIONS FOR ROTATIONS around Z_Pole
-void calcLookUP(float v) {  //receive from fucntion calling at end of draw
-  
-  
-  
-  
+void calcLookUD(float v) {  //receive from fucntion calling at end of draw
+  lookUD = v;
+  float amountLookUD = map(lookUD-pLookUD, -1, 1, -PI, PI);  //giving one rotation each direction
+  pCam.rotateX(amountLookUD);
+  println (" amountLookUD = " + amountLookUD);
+  pLookUD = lookUD;// resetting the acceleration so it's not additive.  start at zero difference
+}
+
+void calcTiltLR (float v) {
+  tiltLR = v;
+  float amountTiltLR = map (tiltLR-pTiltLR, -1, 1, PI, -PI);
+  pCam.rotateZ(amountTiltLR);
+  println (" amountTiltLR = " + amountTiltLR);
+  pTiltLR = tiltLR;
 }
 
 
