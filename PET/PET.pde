@@ -81,6 +81,7 @@ float rcvTiltLR = 0;
 float zoomIO = 0; //
 float pZoomIO = 0;
 float rcvZoomIO = 0;
+float pAmountZoomIO = 0;
 
 float moveLR = 0;
 float pMoveLR = 0;
@@ -111,7 +112,7 @@ void setup () {
 
   pCam = new PeasyCam(this, 0, 0, 0,500); //initialize peasy
   ZoomDragHandler = pCam.getZoomDragHandler();//getting control of zoom action
-  pCam.setWheelScale(.5);
+  pCam.setWheelScale(1);
 
   kinect1 = new SimpleOpenNI (this);  //initialize 1 kinect
   kinect1.setMirror(true);//disable mirror and renable with set mirror button
@@ -138,6 +139,9 @@ void oscEvent (OscMessage theOscMessage) {
   }
   else if (addr.equals("/1/moveLR")) {
     rcvMoveLR = val;
+  }
+  else if (addr.equals("/1/moveUD")) {
+    rcvMoveUD= val;
   }
   else if (addr.equals("/1/reset")) {
     reset = val;
@@ -220,15 +224,19 @@ void draw() {
   calcLookLR(rcvLookLR);
   calcLookUD(rcvLookUD);
   calcTiltLR(rcvTiltLR);
-  calcZoomIO(rcvZoomIO);
+  
+  calcZoomIO(rcvZoomIO);  //going to the drag Handler
   
   calcMoveLR(rcvMoveLR);
+  calcMoveUD(rcvMoveUD);
 
   print("rcvLookLR = " + rcvLookLR);
   print(" rcvLookUD = " + rcvLookUD);
-  print(" rcvTiltLR = " + rcvTiltLR);
-  println(" rcvZoomIO = " + rcvZoomIO);
-  print("rcvMoveLR = " + rcvMoveLR);
+  println(" rcvTiltLR = " + rcvTiltLR);
+  print("rcvZoomIO = " + rcvZoomIO);
+  print(" rcvMoveLR = " + rcvMoveLR);
+  println(" rcvMoveUD = " + rcvMoveUD);
+  
 }//end draw
 
 //defining the functions for rotations around Y_Pole
@@ -236,7 +244,7 @@ void calcLookLR (float v) {
   lookLR = v;
   float amountLookLR = map(lookLR - pLookLR, -1, 1, -PI, PI);
   pCam.rotateY (amountLookLR);
-  print("amountLookLR = " + amountLookLR);
+  print("aLookLR = " + amountLookLR);
   pLookLR = lookLR;
 }
 //+++++DEFINE FUNCTIONS FOR ROTATIONS around Z_Pole
@@ -244,7 +252,7 @@ void calcLookUD(float v) {  //receive from fucntion calling at end of draw
   lookUD = v;
   float amountLookUD = map(lookUD-pLookUD, -1, 1, -PI, PI);  //giving one rotation each direction
   pCam.rotateX(amountLookUD);
-  print (" amountLookUD = " + amountLookUD);
+  print (" LookUD = " + amountLookUD);
   pLookUD = lookUD;// resetting the acceleration so it's not additive.  start at zero difference
 }
 //++++++DEFINE FUNCTION FOR TILT
@@ -252,30 +260,41 @@ void calcTiltLR (float v) {
   tiltLR = v;
   float amountTiltLR = map (tiltLR-pTiltLR, -1, 1, PI, -PI);
   pCam.rotateZ(amountTiltLR);
-  print (" amountTiltLR = " + amountTiltLR);
+  println (" aTiltLR = " + amountTiltLR);
   pTiltLR = tiltLR;
 }
 //_____DEFINE FUNCTION FOR ZOOM
 void calcZoomIO (float v) {
   zoomIO = v;
-  float amountZoomIO = map (zoomIO, -1,1, -10,10);
-  ZoomDragHandler.handleDrag(amountZoomIO,pZoomIO);
-  pZoomIO = amountZoomIO;
+  float amountZoomIO = map (zoomIO, -1,1, -10,10); //ws zoomIO only and -10,10
+  ZoomDragHandler.handleDrag(amountZoomIO,amountZoomIO); // (was amountZoomIo, zooomIo
+  float pAmountZoomIO = amountZoomIO;
+  pZoomIO=zoomIO;
+  
   
   //pCam.setDistance(amountZoomIO); //distance from looked at point.  i think this distance no differen
   double d = pCam.getDistance();// how far away is look-at point
-  print(" dist_lookAt = " +d);
-  println(" amountZoomIO = " + amountZoomIO);
+  print("dist_lookAt = " +d);
+  print(" aZoomIO = " + amountZoomIO);
+  println(" pAZoomIO = " + pAmountZoomIO);
    
 }
 void calcMoveLR (float v) {
  moveLR = v;
 double amountMoveLR = map (moveLR-pMoveLR, -1,1,3000,-3000);  //camera.pan(double dx, double dy);
 pCam.pan(amountMoveLR, 0);  // y =0 because we're only moving on the x-axis.
-print(" amountMoveLR = " + amountMoveLR);
+print(" aMoveLR = " + amountMoveLR);
 pMoveLR = moveLR;
 }
 
+void calcMoveUD (float v) {
+  moveUD = v;
+  double amountMoveUD = map (moveUD-pMoveUD, -1,1, 3000,-3000);
+  pCam.pan(0,amountMoveUD);
+  pMoveUD = moveUD;
+ println(" aMoveUD = " + amountMoveUD); 
+}
+  
   
 
 
