@@ -59,6 +59,15 @@ OscP5 oscP5;
 
 PeasyDragHandler ZoomDragHandler;
 
+Hotspot hotspotF; //front
+Hotspot hotspotFR;
+Hotspot hotspotMR;
+Hotspot hotspotBR;
+Hotspot hotspotB;  //back
+Hotspot hotspotBL;// front left
+Hotspot hotspotML; //middle left
+Hotspot hotspotFL; //backleft
+
 //iPad recepticles
 //controls peasy.rotateY
 float lookLR = 0; //  Look Left/Right = /1/lookLR :  range 0-1 incoming 
@@ -107,9 +116,7 @@ void setup () {
 
   //start oscP5 listening for incoming messages at port 8000
   oscP5 = new OscP5(this, 8000);
- 
-
-  pCam = new PeasyCam(this, 0, 0, 0,300); //initialize peasy
+  pCam = new PeasyCam(this, 0, 0, -1000,300); //initialize peasy
   ZoomDragHandler = pCam.getZoomDragHandler();//getting control of zoom action
   pCam.setWheelScale(1);
   pCam.setMinimumDistance(0);
