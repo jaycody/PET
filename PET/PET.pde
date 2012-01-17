@@ -106,13 +106,14 @@ float pSwCam = 0;
 boolean wasOn = true;
 boolean isOn = true;
 
-color[]      userColors = { color(255,0,0), color(0,255,0), color(255,255,100), color(255,255,0), color(255,0,255), color(250,200,255) };
-color[]      userCoMColors = { color(255,100,100), color(100,255,100), color(255,100,255), color(255,255,100), color(255,100,255), color(100,255,255) };
+color[] userColors = { color(255,0,0), color(0,255,0), color(255,255,100), color(255,255,0), color(255,0,255), color(250,200,255) };
+color[] userCoMColors = { color(255,100,100), color(100,255,100), color(255,100,255), color(255,255,100), color(255,100,255), color(100,255,255) };
 
 
 
 void setup () {
   size (1024, 768, OPENGL);
+   smooth();
 
   //start oscP5 listening for incoming messages at port 8000
   oscP5 = new OscP5(this, 8000);
@@ -136,7 +137,7 @@ void setup () {
   //kinect1.enableRGB();
   //kinect1.alternativeViewPointDepthToImage();
   
-  smooth();
+  hotspotB = new Hotspot (-200,0,800, 150);
 }
 
 // create function to recv and parse oscP5 messages
@@ -240,9 +241,23 @@ int userCount = kinect1.getNumberOfUsers();
           stroke(50); 
           
         point(realWorldPoint.x,realWorldPoint.y,realWorldPoint.z);
+        
+        //here come the hotspots, if we want to use them to trigger look at points
+        // CHECK -> DRAW -> isHIT? -> IF YES, lookAT -> CLEAR
+        hotspotB.check(realWorldPoint) ; //check out this vector, bro
       }
     } 
-  } 
+  }
+ 
+ //here come the hotspots to draw
+hotspotB.draw(); 
+
+if (hotspotB.isHit()) {
+  pCam.lookAt(hotspotB.center.x,hotspotB.center.y *-1,hotspotB.center.z *-1, 500,500);
+  //x,y,z | then HOW CLOSE, then duration to get there
+}
+
+hotspotB.clear();
   
   // draw the center of mass
   PVector pos = new PVector();
@@ -338,7 +353,7 @@ void calcLookLR (float v) {
 //+++++DEFINE FUNCTIONS FOR ROTATIONS around Z_Pole
 void calcLookUD(float v) {  //receive from fucntion calling at end of draw
   lookUD = v;
-  float amountLookUD = map(lookUD-pLookUD, -1, 1, -PI, PI);  //giving one rotation each direction
+  float amountLookUD = map(lookUD-pLookUD, -1, 1, -2 *PI, 2*PI);  //giving one rotation each direction
   pCam.rotateX(amountLookUD);
   print (" LookUD = " + amountLookUD);
   pLookUD = lookUD;// resetting the acceleration so it's not additive.  start at zero difference
@@ -369,7 +384,7 @@ void calcZoomIO (float v) {
 }
 void calcMoveLR (float v) {
  moveLR = v;
-double amountMoveLR = map (moveLR-pMoveLR, -1,1,3000,-3000);  //camera.pan(double dx, double dy);
+double amountMoveLR = map (moveLR-pMoveLR, -1,1,5000,-5000);  //camera.pan(double dx, double dy);
 pCam.pan(amountMoveLR, 0);  // y =0 because we're only moving on the x-axis.
 print(" aMoveLR = " + amountMoveLR);
 pMoveLR = moveLR;
@@ -377,7 +392,7 @@ pMoveLR = moveLR;
 
 void calcMoveUD (float v) {
   moveUD = v;
-  double amountMoveUD = map (moveUD-pMoveUD, -1,1, 3000,-3000);
+  double amountMoveUD = map (moveUD-pMoveUD, -1,1, 5000,-5000);
   pCam.pan(0,amountMoveUD);
   pMoveUD = moveUD;
  println(" aMoveUD = " + amountMoveUD); 

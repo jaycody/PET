@@ -22,7 +22,7 @@ class Hotspot {
   float oscAddress; //gots to have an address from the iPad
 
   // thr CONSTRUCTOR; it takes 5 arguments representing position size, color.  SAVES these as "instance variables"
-  Hotspot (float centerX, float centerY, float centerZ, int boxSize, float osc) {
+  Hotspot (float centerX, float centerY, float centerZ, int boxSize) {
     center = new PVector (centerX, centerY, centerZ);
     size = boxSize;
     pointsIncluded = 0;
@@ -31,7 +31,7 @@ class Hotspot {
     fillColor = strokeColor = color(random(255), random(255), random(255)); // I can then change this with pass in the color c somehow like color c1 = color (204,255,0);
     //gregs code has fillColor and strokeColor filled at random, but I'd like to pass these variables in.
 
-    oscAddress = osc;  //coming in from this instance's related touchOSC value
+   // oscAddress = osc;  //coming in from this instance's related touchOSC value
   }
 
   //now time for some METHODS (aka functions for classes)
