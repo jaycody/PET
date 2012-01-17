@@ -110,7 +110,7 @@ color[] userColors = {
   color(255, 0, 0), color(0, 255, 0), color(255, 255, 100), color(255, 255, 0), color(255, 0, 255), color(250, 200, 255)
 };
 color[] userCoMColors = { 
-  color(255, 100, 100), color(100, 255, 100), color(255, 100, 255), color(255, 255, 100), color(255, 100, 255), color(100, 255, 255)
+  color(255, 100, 255), color(255, 255, 100), color(255, 100, 255), color(255, 0, 100), color(255, 100, 255), color(100, 255, 255)
 };
 
 
@@ -121,7 +121,7 @@ void setup () {
 
   //start oscP5 listening for incoming messages at port 8000
   oscP5 = new OscP5(this, 8000);
-  pCam = new PeasyCam(this, 0, 0, -500, 2000); //initialize peasy
+  pCam = new PeasyCam(this, 0, 0, -900, 1000); //initialize peasy
   ZoomDragHandler = pCam.getZoomDragHandler();//getting control of zoom action
   pCam.setWheelScale(1);
   //pCam.setMinimumDistance(0);
@@ -138,8 +138,8 @@ void setup () {
   kinect1.enableScene();
 
   //for color alignment
-  //kinect1.enableRGB();
-  //kinect1.alternativeViewPointDepthToImage();
+ kinect1.enableRGB();
+  kinect1.alternativeViewPointDepthToImage();
 
   hotspotB = new Hotspot (-1300, 0, 2000, 200);
   hotspotBL = new Hotspot (-950,-600 , 2000, 200);
@@ -218,7 +218,7 @@ void draw() {
   kinect1.update();
 
   //now load the color image
-  // PImage rgbImage = kinect1.rgbImage();
+  PImage rgbImage = kinect1.rgbImage();
 
   rotateX(PI); //rotate along the xPole 180 degrees
   //stroke(255);
@@ -231,59 +231,59 @@ void draw() {
   //  }
 
   // Draw RealWorld Depth Map
-  //PVector[] depthPoints = kinect1.depthMapRealWorld();
-  //  // don't skip any depth points
-  //  for (int i = 0; i < depthPoints.length; i+=2) {
-  //    //original increment of for loop counter set to 1
-  //    PVector currentPoint = depthPoints[i];
+  PVector[] depthPoints = kinect1.depthMapRealWorld();
+    // don't skip any depth points
+    for (int i = 0; i < depthPoints.length; i+=2) {
+      //original increment of for loop counter set to 1
+      PVector currentPoint = depthPoints[i];
   //    // set the stroke color based on the color pixel
-  //    stroke(rgbImage.pixels[i]);
-  //    point(currentPoint.x, currentPoint.y, currentPoint.z);
-  //  }
+      stroke(rgbImage.pixels[i]);
+      point(currentPoint.x, currentPoint.y, currentPoint.z);
+    }
 
   //____DRAW USERS
 
-  int[]   depthMap = kinect1.depthMap();
-  int     steps   = 3;  // to speed up the drawing, draw every third point
-  int     index;
-  PVector realWorldPoint;
-
-  int userCount = kinect1.getNumberOfUsers();
-  int[] userMap = null;
-  if (userCount > 0)
-  {
-    userMap = kinect1.getUsersPixels(SimpleOpenNI.USERS_ALL);
-  }
-
-  for (int y=0;y < kinect1.depthHeight();y+=steps)
-  {
-    for (int x=0;x < kinect1.depthWidth();x+=steps)
-    {
-      index = x + y * kinect1.depthWidth();
-      if (depthMap[index] > 0)
-      { 
-        // get the realworld points
-        realWorldPoint = kinect1.depthMapRealWorld()[index];
-
-        // check if there is a user
-        if (userMap != null && userMap[index] != 0)
-        {  // calc the user color
-          int colorIndex = userMap[index] % userColors.length;
-          stroke(userColors[colorIndex]);
-        }
-        else
-          // default color
-
-          stroke(150); 
-
-        point(realWorldPoint.x, realWorldPoint.y, realWorldPoint.z);
-
-        //here come the hotspots, if we want to use them to trigger look at points
-        // CHECK -> DRAW -> isHIT? -> IF YES, lookAT -> CLEAR
-        hotspotB.check(realWorldPoint) ; //check out this vector, bro
-      }
-    }
-  }
+//  int[]   depthMap = kinect1.depthMap();
+//  int     steps   = 3;  // to speed up the drawing, draw every third point
+//  int     index;
+//  PVector realWorldPoint;
+//
+//  int userCount = kinect1.getNumberOfUsers();
+//  int[] userMap = null;
+//  if (userCount > 0)
+//  {
+//    userMap = kinect1.getUsersPixels(SimpleOpenNI.USERS_ALL);
+//  }
+//
+//  for (int y=0;y < kinect1.depthHeight();y+=steps)
+//  {
+//    for (int x=0;x < kinect1.depthWidth();x+=steps)
+//    {
+//      index = x + y * kinect1.depthWidth();
+//      if (depthMap[index] > 0)
+//      { 
+//        // get the realworld points
+//        realWorldPoint = kinect1.depthMapRealWorld()[index];
+//
+//        // check if there is a user
+//        if (userMap != null && userMap[index] != 0)
+//        {  // calc the user color
+//          int colorIndex = userMap[index] % userColors.length;
+//          stroke(userColors[colorIndex]);
+//        }
+//        else
+//          // default color
+//
+//          stroke(70); 
+//
+//        point(realWorldPoint.x, realWorldPoint.y, realWorldPoint.z);
+//
+//        //here come the hotspots, if we want to use them to trigger look at points
+//        // CHECK -> DRAW -> isHIT? -> IF YES, lookAT -> CLEAR
+//        hotspotB.check(realWorldPoint) ; //check out this vector, bro
+//      }
+//    }
+//  }
 //_________________________
   //here come the hotspots to draw
   hotspotB.draw(); 
@@ -353,17 +353,17 @@ void draw() {
   
 
   // draw the center of mass
-  PVector pos = new PVector();
-  pushStyle();
-  strokeWeight(15);
-  for (int userId=1;userId <= userCount;userId++)
-  {
-    kinect1.getCoM(userId, pos);
-
-    stroke(userCoMColors[userId % userCoMColors.length]);
-    point(pos.x, pos.y, pos.z);
-  }  
-  popStyle();
+//  PVector pos = new PVector();
+//  pushStyle();
+//  strokeWeight(15);
+//  for (int userId=1;userId <= userCount;userId++)
+//  {
+//    kinect1.getCoM(userId, pos);
+//
+//    stroke(userCoMColors[userId % userCoMColors.length]);
+//    point(pos.x, pos.y, pos.z);
+//  }  
+//  popStyle();
 
 
 

@@ -77,7 +77,7 @@ class Hotspot {
   void draw() {
     pushMatrix();
     translate (center.x, center.y, center.z);
-   // strokeWeight (2);
+    //strokeWeight (2);
     fill(red(fillColor), green(fillColor), blue(fillColor), 255 * percentIncluded()); // fill could go here. genius
     stroke(red(fillColor), green(fillColor), blue (fillColor), 255); // full alpha at the end there
     box (size);
