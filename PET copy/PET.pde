@@ -102,10 +102,6 @@ float pSwCam = 0;
 boolean wasOn = true;
 boolean isOn = true;
 
-color[]      userColors = { color(255,0,0), color(0,255,0), color(255,255,100), color(255,255,0), color(255,0,255), color(250,200,255) };
-color[]      userCoMColors = { color(255,100,100), color(100,255,100), color(255,100,255), color(255,255,100), color(255,100,255), color(100,255,255) };
-
-
 
 void setup () {
   size (1024, 768, OPENGL);
@@ -114,27 +110,13 @@ void setup () {
   oscP5 = new OscP5(this, 8000);
  
 
-  pCam = new PeasyCam(this, 0, 0, 0,300); //initialize peasy
+  pCam = new PeasyCam(this, 0, 0, 0,500); //initialize peasy
   ZoomDragHandler = pCam.getZoomDragHandler();//getting control of zoom action
   pCam.setWheelScale(1);
-  pCam.setMinimumDistance(0);
-  pCam.setMaximumDistance(6000);
 
   kinect1 = new SimpleOpenNI (this);  //initialize 1 kinect
   kinect1.setMirror(true);//disable mirror and renable with set mirror button
   kinect1.enableDepth();
-  
-    // enable skeleton generation for all joints
-  kinect1.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
-  
-  // enable the scene, to get the floor
-  kinect1.enableScene();
-  
-  //for color alignment
-  //kinect1.enableRGB();
-  //kinect1.alternativeViewPointDepthToImage();
-  
-  smooth();
 }
 
 // create function to recv and parse oscP5 messages
@@ -178,84 +160,16 @@ void draw() {
 
   background (0);
   kinect1.update();
-  
- //now load the color image
-// PImage rgbImage = kinect1.rgbImage();
 
   rotateX(PI); //rotate along the xPole 180 degrees
-  //stroke(255);
+  stroke(255);
 
-////  //____DRAW POINT CLOUD____
-//  PVector [] depthPoints1 = kinect1.depthMapRealWorld(); //returns an array loads array
-//  for (int i = 0; i<depthPoints1.length; i+=3) {
-//    PVector currentPoint = depthPoints1 [i]; //extract PVector from this location and store it locally
-//    point (currentPoint.x, currentPoint.y, currentPoint.z);
-//  }
-
-// Draw RealWorld Depth Map
-//PVector[] depthPoints = kinect1.depthMapRealWorld();
-//  // don't skip any depth points
-//  for (int i = 0; i < depthPoints.length; i+=2) {
-//    //original increment of for loop counter set to 1
-//    PVector currentPoint = depthPoints[i];
-//    // set the stroke color based on the color pixel
-//    stroke(rgbImage.pixels[i]);
-//    point(currentPoint.x, currentPoint.y, currentPoint.z);
-//  }
-
-//____DRAW USERS
-
-  int[]   depthMap = kinect1.depthMap();
-  int     steps   = 3;  // to speed up the drawing, draw every third point
-  int     index;
-  PVector realWorldPoint;
-  
-int userCount = kinect1.getNumberOfUsers();
-  int[] userMap = null;
-  if(userCount > 0)
-  {
-    userMap = kinect1.getUsersPixels(SimpleOpenNI.USERS_ALL);
+  //____DRAW POINT CLOUD____
+  PVector [] depthPoints1 = kinect1.depthMapRealWorld(); //returns an array loads array
+  for (int i = 0; i<depthPoints1.length; i+=5) {
+    PVector currentPoint = depthPoints1 [i]; //extract PVector from this location and store it locally
+    point (currentPoint.x, currentPoint.y, currentPoint.z);
   }
-  
-  for(int y=0;y < kinect1.depthHeight();y+=steps)
-  {
-    for(int x=0;x < kinect1.depthWidth();x+=steps)
-    {
-      index = x + y * kinect1.depthWidth();
-      if(depthMap[index] > 0)
-      { 
-        // get the realworld points
-        realWorldPoint = kinect1.depthMapRealWorld()[index];
-        
-        // check if there is a user
-        if(userMap != null && userMap[index] != 0)
-        {  // calc the user color
-          int colorIndex = userMap[index] % userColors.length;
-          stroke(userColors[colorIndex]); 
-        }
-        else
-          // default color
-          stroke(50); 
-          
-        point(realWorldPoint.x,realWorldPoint.y,realWorldPoint.z);
-      }
-    } 
-  } 
-  
-  // draw the center of mass
-  PVector pos = new PVector();
-  pushStyle();
-    strokeWeight(15);
-    for(int userId=1;userId <= userCount;userId++)
-    {
-      kinect1.getCoM(userId,pos);
-   
-      stroke(userCoMColors[userId % userCoMColors.length]);
-      point(pos.x,pos.y,pos.z);
-    }  
-  popStyle();
-  
-
 
   //___TOGGLE SWITCHES
   //___________________
@@ -328,7 +242,7 @@ int userCount = kinect1.getNumberOfUsers();
 //defining the functions for rotations around Y_Pole
 void calcLookLR (float v) {
   lookLR = v;
-  float amountLookLR = map(lookLR - pLookLR, -1, 1, -2*PI, 2*PI);
+  float amountLookLR = map(lookLR - pLookLR, -1, 1, -PI, PI);
   pCam.rotateY (amountLookLR);
   print("aLookLR = " + amountLookLR);
   pLookLR = lookLR;
@@ -396,26 +310,11 @@ void peasyVectors() {
 }
 
 
-// -----------------------------------------------------------------
-// SimpleOpenNI user events
-
-void onNewUser(int userId)
-{
-  println("onNewUser - userId: " + userId);  
-}
-
-void onLostUser(int userId)
-{
-  println("onLostUser - userId: " + userId);
-}
-
-
-
 //Shiffman's advice for starting full screen undecorated windows in second monitor
 //void init() { 
 //  frame.removeNotify();
-// frame.setUndecorated(true);
-// frame.addNotify();
+//  frame.setUndecorated(true);
+//  frame.addNotify();
 //  super.init();
 //}
 //then in draw add:  frame.setLocation(0,0); // to place an undecorated screen at origin
