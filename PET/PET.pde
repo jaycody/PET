@@ -20,25 +20,20 @@
  
  
  TODO:
- Done____Begin Peasy
- Done____draw simple point cloud
- Done____create and control one peasy variable
- 
- DONE____create and control one peasy variable with ipad
- 
- ____define functions to receive parameters for LR UP IO look
- DONE____attempt to pass functions from OSCevent.  just for testing purposes. likely call functions in draw
- 
- ____add PEASY cam control to variables (perhaps issue with moving the coordinate system?
- ____Follow User1 center of gravity
- ____Look at User 1 center of gravity
- 
- ____add remainder of variables for standard movements
- ____then switch to ABQ computer and begin pCam hotspots
- 
- DONE____drawCam with kinect.drawCamFrustum()
- ____draw the floor (see UserScene3D example)
- ____color user separate from background (see UserScene3D)
+____create hotspot class
+____establish edge detection with iPad input
+____add hotspots toggle to see in in 3D
+____create LookAt with Peasy
+____enable camera controls (gimble)
+____map gimble controls to z values of iPad?
+____Look at Center of Gravity
+____toggle vectors to camera
+____creat a 3D place holder for table as reference.
+
+
+____fix zoom
+____add snapshot
+  ____draw the floor (see UserScene3D example)
  ____remove background leaving only user and massage table.
  
  ____share PET via DropBox rather than push git updates
@@ -47,7 +42,7 @@
  ____create Kinect switching
  ____hotspot above therpists head
  ____where toggling between Kinects, return to previous camera angle
- ____//PeasyDragHandler will retain dampening effect seen by mouseXY
+ 
  
  
  
