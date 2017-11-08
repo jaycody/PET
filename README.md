@@ -40,3 +40,26 @@ PET introduces the following tools to the traditional massage school
 Video from the virtual camera's perspective is then sent to a pair of video goggles worn by the student. The video gives the student the rare opportunity to self-evaluate his/her body mechanics from nearly limitless external perspectives.
 #### Camera Control
 There are two controls for the virtual camera, either of which can move the virtual camera into any position around a massage table. The tablet-based UI allows the teacher to freely move the camera to any position within a sphere around the massage table. Additionally, the student can at any time reach up above a certain threshold height to trigger a POV transition to that location. Students can observe themselves from a perspective directly above themselves by simply lifting their arm high enough to activate the transition. User tracking functionality provided by SimpleOpenNI keeps the camera pointed at the student regardless of where the around the table the student stands.
+
+_________________
+
+## References and Inspiration
+#### Greg Borenstein
+- [Making Things See: 3D Vision with Kinect, Processing, Arduino, and MakerBot][1] (2012)
+  - Infinite thanks to Greg Borenstein for his detailed description of Kinect hacking (in what was just a pdf at the time)
+
+#### All things Shiffman
+- [The Nature of Code: Simnulating Natural Systems with Processing][3] - Dan Shiffman (2012)
+  - This book is the offspring of Reynolds and the grandaddy of everything I'll ever code that seems life-like and improvisational.
+  - As with Borenstein's Making Things See, The Nature of Code was still only in pdf format at the time of the PET project. Additionally, the printed copy I brought with me to Albuquerque, New Mexico for this project was a fantastically dog-eared and feverishly annotated incomplete rough draft that I'd printed on NYU printers, stapled together by chapter and carried with me everyday until the book was released a year later.  
+- [The Coding Train][2] - Yes, and for the coding train.
+
+#### [Albuquerque School of Massage & Health Sciences][4]
+- Dawn Saunders, Owner and Director, LMT #3440, RMTI#S-0244
+
+
+
+[1]:https://www.amazon.com/Making-Things-See-Processing-MakerBot/dp/1449307078
+[2]:http://thecodingtrain.com/
+[3]:http://natureofcode.com/
+[4]:http://www.naturallifestyle.net/profiles/Albuquerque-School-of-Massage-Therapy-Health-Sciences-2273
