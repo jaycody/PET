@@ -3,6 +3,10 @@
 ## What is PET?
 PET is a mixed-reality visual feedback system used to teach healthy body mechanics to massage students.  Massage instructors use a tablet-based UI to move a virtual camera into any position around a massage table. Video googles provide students with a view of themselves from the external POV set by the instructor. In this way, students can watch themselves from any angle as they learn and practice massage techniques.
 
+## Where?
+- PET was installed at the [Albuquerque School of Massage & Health Sciences][4] in Jan 2012.
+- Images and videos of the [PET project of Flickr][5]
+
 ## Why?
 Regardless the modality, all massage schools rely on the tried and true teaching tools: demonstration, practice, and feedback. Teachers demonstrate techniques, students practice the technique on each other, and everyone provides feedback. Feedback in massage school will almost always address one of two topics:
 1. The practitioner's affect on the client. ('This is how it felt')
@@ -63,3 +67,4 @@ _________________
 [2]:http://thecodingtrain.com/
 [3]:http://natureofcode.com/
 [4]:http://www.naturallifestyle.net/profiles/Albuquerque-School-of-Massage-Therapy-Health-Sciences-2273
+[5]:https://www.flickr.com/photos/jaycody9/albums/72157637799085485
