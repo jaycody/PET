@@ -21,7 +21,6 @@ A common exercise is to have students take turns mimicking each other. This give
 
 But mirrors and mimicry, though useful, convey only a sliver of the real-time proprioceptive feedback that students, athletes, or rehabilitating veterans are capable of absorbing. Enter: PET
 
-
 ## Tools and Gear
 PET introduces the following tools to the traditional massage school
 ### v1.0.0
@@ -33,3 +32,11 @@ PET introduces the following tools to the traditional massage school
 
 ### v2.0.0
 - Kinematic visualizations that help instructors identify and respond to issues body mechanics and technique.
+
+## SETUP:  
+#### The Kinects and the Mac Mini
+2 Kinects placed 20 feet apart are attached to the metal grid of a drop ceiling 10 feet off the ground.  The Kinects face a massage table positioned on the floor half way between the two Kinects.  A Mac Mini running Processing and the SimpleOpenNI Library is also mounted in the drop ceiling. From below, only the volumetric sensors are visible. With volumetric information from the sensors, the Mac runs a Processing sketch that allows a user to place a virtual camera at any location within the field of the depth sensors.
+#### Video Goggles
+Video from the virtual camera's perspective is then sent to a pair of video goggles worn by the student. The video gives the student the rare opportunity to self-evaluate his/her body mechanics from nearly limitless external perspectives.
+#### Camera Control
+There are two controls for the virtual camera, either of which can move the virtual camera into any position around a massage table. The tablet-based UI allows the teacher to freely move the camera to any position within a sphere around the massage table. Additionally, the student can at any time reach up above a certain threshold height to trigger a POV transition to that location. Students can observe themselves from a perspective directly above themselves by simply lifting their arm high enough to activate the transition. User tracking functionality provided by SimpleOpenNI keeps the camera pointed at the student regardless of where the around the table the student stands.
