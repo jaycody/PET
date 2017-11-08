@@ -1,10 +1,18 @@
-Mixed Reality Visual Feedback System used to teach healthy Body Mechanics to massage students.
+# Proprioception Enhancement Tools
+> Regardless the modality, all massage schools rely on the tried and true teaching tools known as demonstration, pactice, and feedback. Mixed-reality visual feedback system used to teach healthy body mechanics to massage students.  Massage instructors use a tablet-based UI
+to move a virtual camera into any position around a massage table. Video googles provide students with a view of themselves from the external
+POV set by the instructor. In this way, students can watch themselves from any angle as they learn and practice massage techniques.
 
-Integrates traditional classroom practices with 
-	3D volumetric sensing
-	computational kinematic evaluation
-	virtual objects in augmented space
-	realtime visual feedback
+
+## Overview
+Introduces the following tools to the traditional massage school
+### v1.0.0
+- volumetric sensors (2 Kinects)
+- virtual camera 
+- real-time visual feedback system with video goggles and out-of-body POV
+- tablet-based UI that allows instructors to position a virtual camera at any angle around a massage table.
+
+	
 
 Visualizations of kinematic features help  instructors identify  and respond to improper body mechanics in a more efficient way.
 
